@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Inventario</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:#bd7cb2;
+    padding:16px;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+}
+
+/* TITULO */
+h1{
+    text-align:center;
+    margin-bottom:20px;
+    color:#0f172a;
+    font-size:clamp(1.6rem,5vw,2rem);
+}
+
+/* BUSCADOR */
+.search-section{
+    background:#ffffff;
+    padding:14px;
+    border-radius:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+    margin-bottom:20px;
+}
+
+.search-box{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+#searchInput{
+    flex:1;
+    padding:12px;
+    border-radius:14px;
+    border:1.5px solid #e2e8f0;
+    font-size:15px;
+    outline:none;
+    transition:0.2s;
+}
+
+@media (max-width: 480px) {
+    #searchInput {
+        max-width: 130px;
+        flex: none;
+    }
+}
+
+#searchInput:focus{
+    border-color:#3b82f6;
+    box-shadow:0 0 0 3px rgba(59,130,246,0.15);
+}
+
+button{
+    padding:12px 18px;
+    border:none;
+    border-radius:14px;
+    font-weight:600;
+    cursor:pointer;
+    font-size:14px;
+    transition:0.2s;
+}
+
+.search-btn{
+    background:#080320;
+    color:white;
+}
+
+.clear-btn{
+    background:#270aa7;
+    color:white;
+}
+
+/* BOTÓN SALIR ROJO */
+.logout-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.logout-btn:active {
+    transform: scale(0.97);
+    background: #dc2626;
+}
+
+.logout-btn i {
+    font-size: 1rem;
+}
+
+button:active{
+    transform:scale(0.97);
+}
+
+/* GRID PRODUCTOS */
+.products-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+
+@media(min-width:640px){
+    .products-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media(min-width:1024px){
+    .products-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+}
+
+/* TARJETAS */
+.product-card{
+    background:white;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 6px 18px rgba(0,0,0,0.06);
+    transition:0.2s;
+    display:flex;
+    flex-direction:column;
+}
+
+.product-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 22px rgba(0,0,0,0.08);
+}
+
+.product-image-container{
+    width:100%;
+    padding-bottom:100%;
+    position:relative;
+    background:#e2e8f0;
+}
+
+.image-placeholder{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:2.8rem;
+}
+
+.product-info{
+    padding:14px;
+}
+
+.product-name{
+    font-size:0.95rem;
+    font-weight:600;
+    color:#0f172a;
+    margin-bottom:10px;
+    min-height:2.4em;
+}
+
+.product-details{
+    font-size:0.85rem;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.cost-value{
+    color:#059669;
+    font-weight:600;
+}
+
+.stock-value{
+    color:#2563eb;
+    font-weight:600;
+}
+
+
+/* ============================================ */
+/* BOTONES MÁS PEQUEÑOS EN MÓVILES */
+/* ============================================ */
+@media (max-width: 480px) {
+    .search-box {
+        gap: 4px;
+    }
+    
+    .search-box button {
+        padding: 8px 10px;
+        font-size: 10px;
+        min-width: auto;
+        flex: 1;
+    }
+    
+    .search-btn, .clear-search-btn, .clear-btn, .logout-btn {
+        padding: 8px 8px;
+        font-size: 11px;
+        gap: 3px;
+    }
+    
+    .logout-btn i {
+        font-size: 0.9rem;
+    }
+    
+    #searchInput {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 360px) {
+    .search-box button {
+        padding: 6px 6px;
+        font-size: 10px;
+    }
+    
+    .logout-btn i {
+        font-size: 0.8rem;
+    }
+}
+
+
+
+
+/* BOTÓN LIMPIAR BÚSQUEDA */
+.clear-search-btn {
+    background: #64748b;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.clear-search-btn:active {
+    transform: scale(0.97);
+    background: #475569;
+}
+
+/* BOTÓN VENDIDO */
+.sell-btn{
+    width:100%;
+    padding:6px 10px;          
+    background:#0a9ca7;
+    color:white;
+    border:none;
+    border-radius:20px;        
+    font-weight:600;
+    font-size:0.75rem;         
+    margin-top:8px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    transition:0.2s;
+}
+
+.sell-btn:active{
+    background:#059669;
+    transform:scale(0.98);
+}
+
+.sell-btn:disabled{
+    background:#cbd5e1;
+    cursor:not-allowed;
+    transform:none;
+}
+
+/* MODAL VENTA */
+.modal-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+    backdrop-filter:blur(3px);
+}
+
+.modal{
+    background:white;
+    padding:24px;
+    border-radius:30px;
+    width:90%;
+    max-width:340px;
+    text-align:center;
+    box-shadow:0 20px 30px rgba(0,0,0,0.2);
+    animation:modalPop 0.2s;
+}
+
+@keyframes modalPop{
+    from{
+        transform:scale(0.8);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.modal-icon{
+    font-size:3rem;
+    margin-bottom:12px;
+}
+
+.modal h3{
+    color:#0f172a;
+    margin-bottom:8px;
+    font-size:1.3rem;
+}
+
+.modal p{
+    color:#475569;
+    margin-bottom:16px;
+    font-size:0.95rem;
+}
+
+.modal-buttons{
+    display:flex;
+    gap:12px;
+}
+
+.modal-btn{
+    flex:1;
+    padding:14px;
+    border-radius:40px;
+    font-weight:600;
+    font-size:1rem;
+    border:none;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.modal-btn-yes{
+    background:#10b981;
+    color:white;
+}
+
+.modal-btn-yes:active{
+    background:#059669;
+}
+
+.modal-btn-no{
+    background:#ef4444;
+    color:white;
+}
+
+.modal-btn-no:active{
+    background:#dc2626;
+}
+
+/* MODAL STOCK (LISTA) */
+.stock-modal{
+    max-width:500px;
+    max-height:80vh;
+    overflow-y:auto;
+    padding:20px;
+}
+
+.stock-list{
+    margin:20px 0;
+    text-align:left;
+}
+
+.stock-item{
+    background:#f8fafc;
+    padding:16px;
+    border-radius:16px;
+    margin-bottom:12px;
+    border-left:4px solid #3b82f6;
+    position:relative;
+}
+
+.stock-item-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+}
+
+.stock-item-icon{
+    font-size:1.8rem;
+}
+
+.stock-item-name{
+    font-weight:700;
+    color:#0f172a;
+    font-size:1.1rem;
+    flex:1;
+}
+
+/* BOTÓN EDITAR EN MODAL STOCK */
+.edit-stock-icon{
+    background:#f59e0b;
+    color:white;
+    border:none;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.2rem;
+    cursor:pointer;
+    transition:0.2s;
+    margin-left:auto;
+}
+
+.edit-stock-icon:active{
+    transform:scale(0.9);
+    background:#d97706;
+}
+
+.stock-details{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin:10px 0;
+    font-size:0.9rem;
+}
+
+.stock-detail-box{
+    background:white;
+    padding:8px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 4px rgba(0,0,0,0.02);
+}
+
+.stock-detail-label{
+    color:#64748b;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    margin-bottom:4px;
+}
+
+.stock-detail-value{
+    font-weight:700;
+    font-size:1rem;
+}
+
+.stock-profit{
+    margin-top:8px;
+    padding:8px;
+    border-radius:30px;
+    text-align:center;
+    font-weight:600;
+    font-size:0.9rem;
+}
+
+.profit-positive{
+    background:#d1fae5;
+    color:#065f46;
+}
+
+.profit-negative{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.profit-neutral{
+    background:#fef9c3;
+    color:#854d0e;
+}
+
+.stock-total{
+    background:#1e293b;
+    color:white;
+    padding:16px;
+    border-radius:16px;
+    margin:20px 0 10px;
+    text-align:center;
+}
+
+.stock-total p{
+    margin:5px 0;
+}
+
+.no-results{
+    grid-column:1/-1;
+    text-align:center;
+    padding:40px;
+    color:#64748b;
+    font-size:1rem;
+}
+
+.low-stock{
+    color:#ef4444 !important;
+    font-weight:600;
+}
+
+.close-btn{
+    background:#64748b;
+    color:white;
+    width:100%;
+    padding:14px;
+    border-radius:40px;
+    font-weight:600;
+    margin-top:10px;
+}
+
+/* MODAL EDITAR STOCK */
+.edit-stock-input{
+    width:100%;
+    padding:15px;
+    font-size:1.2rem;
+    text-align:center;
+    border:2px solid #e2e8f0;
+    border-radius:20px;
+    margin:15px 0;
+    outline:none;
+}
+
+.edit-stock-input:focus{
+    border-color:#3b82f6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>📦 Inventario</h1>
+
+<div class="search-section">
+<div class="search-box">
+    <input type="text" id="searchInput" placeholder="Buscar producto..." autocomplete="off">
+    <button class="search-btn" onclick="searchProducts()">Buscar</button>
+    <button class="clear-search-btn" onclick="limpiarBusqueda()">🗑️ Limpiar</button>
+    <button class="clear-btn" onclick="window.location.href='reporte.html'">Stock</button>
+    <button class="logout-btn" onclick="cerrarSesion()">
+        <i>🚪</i> Salir
+    </button>
+</div>
+</div>
+
+<div class="products-grid" id="productsGrid"></div>
+
+</div>
+
+<!-- MODAL CONFIRMACIÓN VENTA -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-icon">🛒</div>
+        <h3>¿Confirmar acción?</h3>
+        <p id="modalProductInfo"></p>
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-yes" id="confirmYes">SÍ</button>
+            <button class="modal-btn modal-btn-no" id="confirmNo">NO</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR STOCK -->
+<div class="modal-overlay" id="editStockModal">
+    <div class="modal">
+        <div class="modal-icon">✏️</div>
+        <h3>Editar Stock</h3>
+        <p id="editProductName"></p>
+        <input type="number" id="editStockInput" class="edit-stock-input" min="0" value="0">
+        <div class="modal-buttons">
+            <button class="modal-btn modal-btn-yes" onclick="confirmEditStock()">Guardar</button>
+            <button class="modal-btn modal-btn-no" onclick="closeEditStockModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL LISTA DE STOCK -->
+<div class="modal-overlay" id="stockModalOverlay">
+    <div class="modal stock-modal">
+        <div class="modal-icon">📊</div>
+        <h3>Reporte de Inventario</h3>
+        
+        <div class="stock-list" id="stockList">
+            <!-- Se llena con JavaScript -->
+        </div>
+        
+        <button class="close-btn" onclick="closeStockModal()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+
+    
+
+    // ============================================
+// VERIFICAR SESIÓN
+// ============================================
+if(!sessionStorage.getItem('sesionActiva')) {
+    // Si no hay sesión, redirigir al login
+    window.location.href = 'login.html';
+}
+
+
+// ============================================
+// PRODUCTOS INICIALES (COMBINADOS: ANTERIORES + NUEVOS)
+// ============================================
+const initialProducts = [
+    // Productos anteriores
+    {name:"Anillos", cost:8, stock:10, initialStock:10, vendido:0, sellingPrice:8, image:""},
+    {name:"Aretes", cost:5, stock:10, initialStock:10, vendido:0, sellingPrice:5, image:""},
+    {name:"Collares", cost:12, stock:10, initialStock:10, vendido:0, sellingPrice:12, image:""},
+    {name:"Pulseras", cost:6, stock:10, initialStock:10, vendido:0, sellingPrice:6, image:""},
+    {name:"Juego", cost:20, stock:10, initialStock:10, vendido:0, sellingPrice:20, image:""},
+    {name:"Reloj", cost:25, stock:10, initialStock:10, vendido:0, sellingPrice:25, image:""},
+    {name:"Joyeros", cost:18, stock:10, initialStock:10, vendido:0, sellingPrice:18, image:""},
+    {name:"Cajitas", cost:2, stock:10, initialStock:10, vendido:0, sellingPrice:2, image:""},
+    
+    // Nuevos productos (con costo = precio de compra, stock = cantidad entre paréntesis)
+    {name:"Anillos con dorado tipo flor", cost:25, stock:16, initialStock:16, vendido:0, sellingPrice:25, image:""},
+    {name:"Anillos en talla 8", cost:25, stock:8, initialStock:8, vendido:0, sellingPrice:25, image:""},
+    {name:"Anillos talla 9", cost:25, stock:4, initialStock:4, vendido:0, sellingPrice:25, image:""},
+    {name:"Anillos talla 10", cost:28, stock:4, initialStock:4, vendido:0, sellingPrice:28, image:""},
+    {name:"Anillos talla 11", cost:28, stock:1, initialStock:1, vendido:0, sellingPrice:28, image:""},
+    {name:"acero bolitas", cost:15, stock:1, initialStock:1, vendido:0, sellingPrice:15, image:""},
+    {name:"plateada con mariposa", cost:18, stock:1, initialStock:1, vendido:0, sellingPrice:18, image:""},
+    {name:"dorada con osito", cost:15, stock:1, initialStock:1, vendido:0, sellingPrice:15, image:""},
+    {name:"punto luz + mariposas", cost:20, stock:1, initialStock:1, vendido:0, sellingPrice:20, image:""},
+    {name:"dorada esmaltada celeste", cost:25, stock:1, initialStock:1, vendido:0, sellingPrice:25, image:""},
+    {name:"tipo cadena", cost:20, stock:1, initialStock:1, vendido:0, sellingPrice:20, image:""},
+    {name:"delgada 4 colores", cost:15, stock:2, initialStock:2, vendido:0, sellingPrice:15, image:""},
+    {name:"Pulseras económicas", cost:9, stock:8, initialStock:8, vendido:0, sellingPrice:9, image:""},
+    {name:"Pulsera de la MINNIE rosada", cost:15, stock:1, initialStock:1, vendido:0, sellingPrice:15, image:""},
+    {name:"Pulseras de varón acero dorado", cost:15, stock:2, initialStock:2, vendido:0, sellingPrice:15, image:""},
+    {name:"Pulseras de varón acero + cuero", cost:15, stock:1, initialStock:1, vendido:0, sellingPrice:15, image:""},
+    {name:"Brazaletes lisa con dije V. María", cost:25, stock:1, initialStock:1, vendido:0, sellingPrice:25, image:""},
+    {name:"Brazaletes abiertos con 2 mariposas", cost:25, stock:1, initialStock:1, vendido:0, sellingPrice:25, image:""},
+    {name:"Brazalete liso", cost:15, stock:1, initialStock:1, vendido:0, sellingPrice:15, image:""},
+    {name:"Collares en acero varón plateado + dijes", cost:35, stock:5, initialStock:5, vendido:0, sellingPrice:35, image:""},
+    {name:"Collar dorado mariposa con punto rojo", cost:20, stock:1, initialStock:1, vendido:0, sellingPrice:20, image:""},
+    {name:"Collar Plateado pareja 2 colores juvenil", cost:20, stock:1, initialStock:1, vendido:0, sellingPrice:20, image:""},
+    {name:"Collar Dorado collar dorado juvenil", cost:20, stock:1, initialStock:1, vendido:0, sellingPrice:20, image:""},
+    {name:"Collar Dorado con bolitas y corazón", cost:25, stock:1, initialStock:1, vendido:0, sellingPrice:25, image:""},
+    {name:"Collar Dorado acero tipo chenqui mariposa", cost:30, stock:1, initialStock:1, vendido:0, sellingPrice:30, image:""},
+    {name:"Collar Dorado con dije niño pequeño", cost:20, stock:1, initialStock:1, vendido:0, sellingPrice:20, image:""},
+    {name:"Reloj varón", cost:20, stock:2, initialStock:2, vendido:0, sellingPrice:20, image:""},
+    {name:"Reloj dorado mujer", cost:25, stock:3, initialStock:3, vendido:0, sellingPrice:25, image:""},
+    {name:"Aretes argolla dorado", cost:15.60, stock:3, initialStock:3, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes Argolla dorada 3 colores", cost:12.60, stock:2, initialStock:2, vendido:0, sellingPrice:12.60, image:""},
+    {name:"Aretes argolla rectangular plateada", cost:12.60, stock:3, initialStock:3, vendido:0, sellingPrice:12.60, image:""},
+    {name:"Aretes Enposte dorado bombita corazón", cost:12.60, stock:5, initialStock:5, vendido:0, sellingPrice:12.60, image:""},
+    {name:"Aretes Dorados argollas tipo canasta", cost:12.50, stock:2, initialStock:2, vendido:0, sellingPrice:12.50, image:""},
+    {name:"Aretes Argollas plateada bolita", cost:15.60, stock:3, initialStock:3, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes Enposte punto de luz", cost:10.60, stock:11, initialStock:11, vendido:0, sellingPrice:10.60, image:""},
+    {name:"Aretes Argolla mediana plateado punto luz cuadrada", cost:15.60, stock:2, initialStock:2, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes Pequeño plateado argolla", cost:10.50, stock:2, initialStock:2, vendido:0, sellingPrice:10.50, image:""},
+    {name:"Aretes Enposte dorado punto celeste", cost:10.50, stock:2, initialStock:2, vendido:0, sellingPrice:10.50, image:""},
+    {name:"Aretes Enposte dorado punto dorado", cost:10.50, stock:3, initialStock:3, vendido:0, sellingPrice:10.50, image:""},
+    {name:"Aretes Enposte punto dorado mediano", cost:12.60, stock:1, initialStock:1, vendido:0, sellingPrice:12.60, image:""},
+    {name:"Aretes Enposte dorado JING JING", cost:18.90, stock:1, initialStock:1, vendido:0, sellingPrice:18.90, image:""},
+    {name:"Aretes Argolla dorada con textura", cost:12.00, stock:1, initialStock:1, vendido:0, sellingPrice:12.00, image:""},
+    {name:"Aretes Enposte dorado chico corazón con punto de luz", cost:10.50, stock:1, initialStock:1, vendido:0, sellingPrice:10.50, image:""},
+    {name:"Aretes Argolla grande plateada mariposa", cost:12.00, stock:1, initialStock:1, vendido:0, sellingPrice:12.00, image:""},
+    {name:"Aretes Enposte dorado corazón negro N° 2", cost:12.40, stock:2, initialStock:2, vendido:0, sellingPrice:12.40, image:""},
+    {name:"Aretes en poste dorado corazón N°3", cost:15.60, stock:5, initialStock:5, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes Argolla plateado lisa tipo aro grande", cost:15.90, stock:1, initialStock:1, vendido:0, sellingPrice:15.90, image:""},
+    {name:"Aretes Arete argolla niña colores almeja con dorado", cost:12.70, stock:1, initialStock:1, vendido:0, sellingPrice:12.70, image:""},
+    {name:"Aretes Argolla dorada geométrica", cost:15.60, stock:1, initialStock:1, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes En poste ojo turco negro con blanco", cost:10.50, stock:3, initialStock:3, vendido:0, sellingPrice:10.50, image:""},
+    {name:"Aretes En poste dorado tipo flor con perla", cost:12.70, stock:1, initialStock:1, vendido:0, sellingPrice:12.70, image:""},
+    {name:"Aretes En poste dorado bolita lisa N°3", cost:12.70, stock:1, initialStock:1, vendido:0, sellingPrice:12.70, image:""},
+    {name:"Aretes Argolla dorada 3 colores con textura", cost:16.80, stock:1, initialStock:1, vendido:0, sellingPrice:16.80, image:""},
+    {name:"Aretes En poste platea corazón liso N°3", cost:10.40, stock:3, initialStock:3, vendido:0, sellingPrice:10.40, image:""},
+    {name:"Aretes Argolla dorado tipo espiga con cristales", cost:15.90, stock:1, initialStock:1, vendido:0, sellingPrice:15.90, image:""},
+    {name:"Aretes Argolla corazón plateada con punto de luz", cost:12.60, stock:1, initialStock:1, vendido:0, sellingPrice:12.60, image:""},
+    {name:"Aretes Argolla dorada con punto medado niña", cost:15.00, stock:2, initialStock:2, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes Argolla dorada mariposa con perlitas y cristal", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes Argolla dorada lisa niña", cost:15.00, stock:2, initialStock:2, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes Argolla dorada listón más cristales", cost:18.00, stock:1, initialStock:1, vendido:0, sellingPrice:18.00, image:""},
+    {name:"Aretes Argolla dorada flor de 3 colores", cost:18.00, stock:1, initialStock:1, vendido:0, sellingPrice:18.00, image:""},
+    {name:"Aretes Argolla dorada 4 colores", cost:15.00, stock:2, initialStock:2, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes en poste dorado con textura chanki", cost:18.50, stock:1, initialStock:1, vendido:0, sellingPrice:18.50, image:""},
+    {name:"Aretes argolla chica dorado 3 colores", cost:12.60, stock:1, initialStock:1, vendido:0, sellingPrice:12.60, image:""},
+    {name:"Aretes dorado en poste cristales rosado", cost:18.00, stock:1, initialStock:1, vendido:0, sellingPrice:18.00, image:""},
+    {name:"Aretes en poste chico cuadrado negro con plateado doble tapa", cost:15.00, stock:2, initialStock:2, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes tulipanes rosado dorado", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes argolla dorado tipo sol con cristales", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes Argolla dorado liso N°1", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes argolla dorado medio sol con punto de luz", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes en poste dorado corazón liso", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Arete argolla colgante dorada mariposa con 3 puntos de luz", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Arete en poste plateado punto luz N°2", cost:12.00, stock:1, initialStock:1, vendido:0, sellingPrice:12.00, image:""},
+    {name:"Arete en poste tipo gota", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Arete argolla plateado", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Arete en poste dorado flor con textura y piedras", cost:18.00, stock:1, initialStock:1, vendido:0, sellingPrice:18.00, image:""},
+    {name:"Aretes en poste punto de luz N°3", cost:12.60, stock:2, initialStock:2, vendido:0, sellingPrice:12.60, image:""},
+    {name:"Aretes Argolla dorado con punto de luz azul", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes En poste dorado tulipán celeste", cost:15.00, stock:1, initialStock:1, vendido:0, sellingPrice:15.00, image:""},
+    {name:"Aretes argolla dorado geometrías Nº 2", cost:15.60, stock:2, initialStock:2, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes pliegado liso gola alargada", cost:18.80, stock:2, initialStock:2, vendido:0, sellingPrice:18.80, image:""},
+    {name:"Aretes argolla dorado tipo telefono pesado", cost:15.60, stock:1, initialStock:1, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes argolla a colores carnaval", cost:10.80, stock:3, initialStock:3, vendido:0, sellingPrice:10.80, image:""},
+    {name:"Aretes dorado bolitas lisa Nº 2", cost:12.70, stock:3, initialStock:3, vendido:0, sellingPrice:12.70, image:""},
+    {name:"Aretes argolla dorado con textura tipo Chaki", cost:15.90, stock:1, initialStock:1, vendido:0, sellingPrice:15.90, image:""},
+    {name:"Aretes argolla dorado medio geometrico liso", cost:15.50, stock:3, initialStock:3, vendido:0, sellingPrice:15.50, image:""},
+    {name:"Aretes un poste Jins Jins cuadrado lila", cost:15.70, stock:1, initialStock:1, vendido:0, sellingPrice:15.70, image:""},
+    {name:"Aretes Colgante dorado modelo fresca con brillo", cost:12.00, stock:1, initialStock:1, vendido:0, sellingPrice:12.00, image:""},
+    {name:"Aretes colgantes colorilla cruzados", cost:10.00, stock:1, initialStock:1, vendido:0, sellingPrice:10.00, image:""},
+    {name:"Aretes en poste tipo fresca con brillos", cost:12.00, stock:1, initialStock:1, vendido:0, sellingPrice:12.00, image:""},
+    {name:"Aretes Tipo colgante plateado mariposas y punto de WZ", cost:12.00, stock:1, initialStock:1, vendido:0, sellingPrice:12.00, image:""},
+    {name:"Aretes en poste dorado tipo panal", cost:15.80, stock:1, initialStock:1, vendido:0, sellingPrice:15.80, image:""},
+    {name:"Aretes argolla dorado tipo flor roja", cost:12.80, stock:1, initialStock:1, vendido:0, sellingPrice:12.80, image:""},
+    {name:"Aretes trio dorado flor/corazon punto luz", cost:22.15, stock:1, initialStock:1, vendido:0, sellingPrice:22.15, image:""},
+    {name:"Aretes argolla dorada con textura colgante circular", cost:15.60, stock:1, initialStock:1, vendido:0, sellingPrice:15.60, image:""},
+    {name:"Aretes plateado mariposas lila y flor celeste con punto de luz", cost:20.00, stock:1, initialStock:1, vendido:0, sellingPrice:20.00, image:""},
+    {name:"Aretes colgante Jing Jing dorado con punto de luz grande cristales chicos doble tapa", cost:20.00, stock:1, initialStock:1, vendido:0, sellingPrice:20.00, image:""},
+    {name:"Aretes En poste dorado cristales cuadrados", cost:80.00, stock:1, initialStock:1, vendido:0, sellingPrice:80.00, image:""},
+    {name:"Aretes en poste dorado corazón morado cinco doble tapa", cost:10.50, stock:3, initialStock:3, vendido:0, sellingPrice:10.50, image:""},
+    {name:"Aretes argolla dorado modelo hojas lisas", cost:18.60, stock:3, initialStock:3, vendido:0, sellingPrice:18.60, image:""},
+    {name:"Aretes en poste dorado con textura tipo almeja doble tapa", cost:15.50, stock:3, initialStock:3, vendido:0, sellingPrice:15.50, image:""}
+];
+
+// Cargar productos guardados o usar iniciales
+let products = [];
+function loadProducts() {
+    const saved = localStorage.getItem('miInventario');
+    if(saved) {
+        products = JSON.parse(saved);
+        // Asegurar que todos tengan vendido
+        products.forEach(p => {
+            if(p.vendido === undefined) p.vendido = 0;
+        });
+    } else {
+        products = JSON.parse(JSON.stringify(initialProducts));
+    }
+}
+loadProducts();
+
+let currentProductIndex = null;
+let currentPromotionIndex = null;
+let currentEditIndex = null;
+
+
+
+
+
+
+
+
+
+// Guardar en localStorage
+function saveToLocalStorage() {
+    localStorage.setItem('miInventario', JSON.stringify(products));
+}
+
+
+
+
+
+
+// ============================================
+// CERRAR SESIÓN (ACTUALIZADO)
+// ============================================
+function cerrarSesion() {
+    if(confirm('¿Cerrar sesión?')) {
+        sessionStorage.removeItem('sesionActiva'); // ELIMINAR MARCA
+        window.location.href = 'login.html';
+    }
+}
+
+
+// ============================================
+// LIMPIAR BÚSQUEDA
+// ============================================
+function limpiarBusqueda() {
+    document.getElementById('searchInput').value = '';
+    displayProducts(products);
+}
+
+
+
+
+// ============================================
+// MOSTRAR PRODUCTOS
+// ============================================
+function displayProducts(productsToShow){
+    const grid=document.getElementById('productsGrid');
+
+    if(productsToShow.length===0){
+        grid.innerHTML='<div class="no-results">🔍 No se encontraron productos</div>';
+        return;
+    }
+
+    grid.innerHTML=productsToShow.map((product, index)=>{
+        const originalIndex = products.findIndex(p => p.name === product.name && p.cost === product.cost);
+        
+        return `
+        <div class="product-card">
+            <div class="product-image-container">
+                ${
+                    product.image
+                    ? `<img src="${product.image}" class="product-image" style="position:absolute;width:100%;height:100%;object-fit:cover;">`
+                    : `<div class="image-placeholder">📦</div>`
+                }
+            </div>
+            <div class="product-info">
+                <div class="product-name">${product.name}</div>
+                <div class="product-details">
+                    <div>💰 Costo: <span class="cost-value">$${product.cost.toFixed(2)}</span></div>
+                    <div>📦 Stock: <span class="stock-value ${product.stock === 0 ? 'low-stock' : ''}">${product.stock} uni.</span></div>
+                    
+                    <div style="display:flex; gap:6px;">
+                        <button class="sell-btn" onclick="openSellModal(${originalIndex})" ${product.stock === 0 ? 'disabled' : ''}>
+                            VENDIDO
+                        </button>
+                        <button class="sell-btn" style="background:#f59e0b;" onclick="openPromotionModal(${originalIndex})" ${product.stock === 0 ? 'disabled' : ''}>
+                            🎁 Promo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+}
+
+// ============================================
+// FUNCIONES DE EDICIÓN
+// ============================================
+function openEditStockFromReport(index) {
+    currentEditIndex = index;
+    const product = products[index];
+    document.getElementById('editProductName').innerHTML = `<strong>${product.name}</strong>`;
+    document.getElementById('editStockInput').value = product.stock;
+    document.getElementById('editStockModal').style.display = 'flex';
+}
+
+function closeEditStockModal() {
+    document.getElementById('editStockModal').style.display = 'none';
+    currentEditIndex = null;
+}
+
+function confirmEditStock() {
+    if(currentEditIndex !== null) {
+        const newStock = parseInt(document.getElementById('editStockInput').value);
+        if(!isNaN(newStock) && newStock >= 0) {
+            products[currentEditIndex].stock = newStock;
+            saveToLocalStorage();
+            displayProducts(products);
+            
+            if(document.getElementById('stockModalOverlay').style.display === 'flex') {
+                openStockModal();
+            }
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            if(searchTerm !== '') searchProducts();
+        }
+    }
+    closeEditStockModal();
+}
+
+// ============================================
+// VENTA
+// ============================================
+function openSellModal(index){
+    if(products[index].stock === 0){
+        alert('❌ No hay stock disponible');
+        return;
+    }
+    
+    currentProductIndex = index;
+    currentPromotionIndex = null;
+    
+    const product = products[index];
+    document.getElementById('modalProductInfo').innerHTML = 
+        `<strong>${product.name}</strong><br>Stock actual: ${product.stock} uni.`;
+    
+    document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function confirmSell(){
+    if(currentProductIndex !== null){
+        products[currentProductIndex].stock -= 1;
+        
+        if(products[currentProductIndex].vendido === undefined) {
+            products[currentProductIndex].vendido = 0;
+        }
+        products[currentProductIndex].vendido += 1;
+        
+        saveToLocalStorage();
+        
+        if(products[currentProductIndex].stock === 0){
+            alert(`✅ Producto vendido\n⚠️ Stock agotado para ${products[currentProductIndex].name}`);
+        } else {
+            alert(`✅ Venta registrada\nStock restante: ${products[currentProductIndex].stock} uni.`);
+        }
+        displayProducts(products);
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        if(searchTerm !== '') searchProducts();
+    }
+    closeModal();
+}
+
+// ============================================
+// PROMOCIÓN
+// ============================================
+function openPromotionModal(index){
+    if(products[index].stock === 0){
+        alert('❌ No hay stock disponible');
+        return;
+    }
+    currentPromotionIndex = index;
+    currentProductIndex = null;
+    const product = products[index];
+    document.getElementById('modalProductInfo').innerHTML =
+        `<strong>${product.name}</strong><br>Stock actual: ${product.stock} uni.<br>¿Deseas regalarlo/promocionarlo?`;
+    document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function confirmPromotionModal(){
+    if(currentPromotionIndex !== null){
+        products[currentPromotionIndex].stock -= 1;
+        
+        if(products[currentPromotionIndex].vendido === undefined) {
+            products[currentPromotionIndex].vendido = 0;
+        }
+        products[currentPromotionIndex].vendido += 1;
+        
+        saveToLocalStorage();
+        
+        alert(`🎉 Producto entregado en promoción!\nStock restante: ${products[currentPromotionIndex].stock} uni.`);
+        displayProducts(products);
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        if(searchTerm !== '') searchProducts();
+    }
+    closeModal();
+}
+
+// ============================================
+// CERRAR MODAL
+// ============================================
+function closeModal(){
+    document.getElementById('modalOverlay').style.display = 'none';
+    currentProductIndex = null;
+    currentPromotionIndex = null;
+}
+
+// ============================================
+// MODAL STOCK
+// ============================================
+function openStockModal(){
+    const stockList = document.getElementById('stockList');
+    let totalGanancias = 0;
+    let totalPerdidas = 0;
+    let totalVendido = 0;
+    
+    stockList.innerHTML = products.map((product, index) => {
+        const vendido = product.vendido || 0;
+        totalVendido += vendido;
+        
+        const gananciaPorUnidad = product.sellingPrice - product.cost;
+        const gananciaTotal = gananciaPorUnidad * vendido;
+        
+        if(gananciaTotal > 0) totalGanancias += gananciaTotal;
+        else if(gananciaTotal < 0) totalPerdidas += Math.abs(gananciaTotal);
+        
+        let profitClass = 'profit-neutral';
+        let profitText = '⚖️ Sin cambios';
+        
+        if(gananciaTotal > 0){
+            profitClass = 'profit-positive';
+            profitText = `💰 Ganancia: $${gananciaTotal.toFixed(2)}`;
+        } else if(gananciaTotal < 0){
+            profitClass = 'profit-negative';
+            profitText = `📉 Pérdida: $${Math.abs(gananciaTotal).toFixed(2)}`;
+        }
+
+        let icon = '';
+        switch(product.name) {
+            case 'Anillos': icon = '💍'; break;
+            case 'Aretes': icon = '✨'; break;
+            case 'Collares': icon = '📿'; break;
+            case 'Pulseras': icon = '⌚'; break;
+            case 'Juego': icon = '🎲'; break;
+            case 'Reloj': icon = '⏰'; break;
+            case 'Joyeros': icon = '🧰'; break;
+            case 'Cajitas': icon = '📦'; break;
+            default: icon = '📦';
+        }
+        
+        return `
+            <div class="stock-item">
+                <div class="stock-item-header">
+                    <span class="stock-item-icon">${icon}</span>
+                    <span class="stock-item-name">${product.name}</span>
+                    <button class="edit-stock-icon" onclick="openEditStockFromReport(${index})">✏️</button>
+                </div>
+                
+                <div class="stock-details">
+                    <div class="stock-detail-box">
+                        <div class="stock-detail-label">Inicial</div>
+                        <div class="stock-detail-value">${product.initialStock}</div>
+                    </div>
+                    <div class="stock-detail-box">
+                        <div class="stock-detail-label">Actual</div>
+                        <div class="stock-detail-value">${product.stock}</div>
+                    </div>
+                    <div class="stock-detail-box">
+                        <div class="stock-detail-label">Vendido</div>
+                        <div class="stock-detail-value">${vendido}</div>
+                    </div>
+                </div>
+                
+                <div class="stock-profit ${profitClass}">
+                    ${profitText}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    const balance = totalGanancias - totalPerdidas;
+    const balanceClass = balance > 0 ? 'profit-positive' : (balance < 0 ? 'profit-negative' : 'profit-neutral');
+    const balanceText = balance > 0 ? 'Ganancia' : (balance < 0 ? 'Pérdida' : 'Equilibrio');
+    
+    stockList.innerHTML += `
+        <div class="stock-total">
+            <p>📊 <strong>RESUMEN TOTAL</strong></p>
+            <p>💰 Ganancias: $${totalGanancias.toFixed(2)}</p>
+            <p>📉 Pérdidas: $${totalPerdidas.toFixed(2)}</p>
+            <p class="${balanceClass}">⚖️ Balance: $${balance.toFixed(2)} (${balanceText})</p>
+            <p>📦 Total vendido: ${totalVendido} unidades</p>
+        </div>
+    `;
+    
+    document.getElementById('stockModalOverlay').style.display = 'flex';
+}
+
+function closeStockModal(){
+    document.getElementById('stockModalOverlay').style.display = 'none';
+}
+
+// ============================================
+// BÚSQUEDA
+// ============================================
+function searchProducts(){
+    const term=document.getElementById('searchInput').value.toLowerCase().trim();
+    if(term === ''){
+        displayProducts(products);
+    } else {
+        const filtered = products.filter(p=>p.name.toLowerCase().includes(term));
+        displayProducts(filtered);
+    }
+}
+
+function resetSearch(){
+    document.getElementById('searchInput').value='';
+    displayProducts(products);
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+document.getElementById('confirmYes').addEventListener('click', function(){
+    if(currentPromotionIndex !== null){
+        confirmPromotionModal();
+    } else if(currentProductIndex !== null){
+        confirmSell();
+    }
+});
+document.getElementById('confirmNo').addEventListener('click', closeModal);
+
+document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){
+        if(document.getElementById('modalOverlay').style.display === 'flex'){
+            closeModal();
+        }
+        if(document.getElementById('stockModalOverlay').style.display === 'flex'){
+            closeStockModal();
+        }
+        if(document.getElementById('editStockModal').style.display === 'flex'){
+            closeEditStockModal();
+        }
+    }
+});
+
+document.getElementById('searchInput').addEventListener('keypress', function(e){
+    if(e.key==='Enter') searchProducts();
+});
+
+// ============================================
+// INICIALIZAR
+// ============================================
+displayProducts(products);
+</script>
+
+</body>
+</html>
